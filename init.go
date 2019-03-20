@@ -62,6 +62,7 @@ func (i *initCmd) run() error {
 	}
 
 	_, err = heads.WriteString("ref: refs/heads/master")
+	heads.Sync()
 
 	return err
 }
