@@ -48,10 +48,20 @@ func (i *initCmd) run() error {
 		return errors.New(fmt.Sprintf("%+v is already a repository", i.path))
 	}
 
-	err = os.Mkdir(gitPath, os.ModePerm)
+	folders := []string{".git", ".git/objects", ".git/refs", ".git/refs/heads"}
+	for _, folder := range folders {
+		err = os.Mkdir(filepath.Join(i.path, folder), os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+
+	heads, err := os.Create(filepath.Join(gitPath, "HEAD"))
 	if err != nil {
 		return err
 	}
 
-	return nil
+	_, err = heads.WriteString("ref: refs/heads/master")
+
+	return err
 }
